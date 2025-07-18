@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bunk Calculator Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <h1>Bunk Calculator Dashboard</h1>
+    <div class="welcome-msg" id="welcomeMsg"></div>
+    <div class="info-box marks-criteria-box">
+      <strong>Marks Criteria:</strong><br>
+      ≥85% = 5 marks<br>
+      80-84% = 4 marks<br>
+      75-79% = 3 marks<br>
+      70-74% = 2 marks<br>
+      65-69% = 1 mark<br>
+      &lt;65% = 0 marks
+    </div>
+    <div class="attendance-section">
+      <h2>Subject Wise Attendance</h2>
+      <table class="attendance-table" id="subjectAttendanceTable">
+        <thead>
+          <tr>
+            <th>S/N</th>
+            <th>Subject</th>
+            <th>Faculty</th>
+            <th>Classes Held</th>
+            <th>Classes Attended</th>
+            <th>Att %</th>
+            <th>Marks</th>
+          </tr>
+        </thead>
+        <tbody id="subjectAttendanceBody">
+          <!-- Rows will be rendered by JS -->
+        </tbody>
+      </table>
+    </div>
+    <div class="attendance-section">
+      <h2>Attendance & Bunkable Classes Filter</h2>
+      <table class="attendance-table" id="filterAttendanceTable">
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>
+              <select id="attendanceFilter">
+                <option value="overall">Overall</option>
+                <!-- Subject options will be added by JS -->
+              </select>
+            </th>
+          </tr>
+        </thead>
+        <tbody id="filterAttendanceBody">
+          <!-- Filtered data will be rendered by JS -->
+        </tbody>
+      </table>
+    </div>
+    <a href="index.html" class="back-link">&larr; Back to Login</a>
+  </div>
+  <script src="dashboard.js"></script>
+</body>
+</html> 
