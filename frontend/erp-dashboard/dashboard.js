@@ -77,72 +77,206 @@ function renderFilterDropdown() {
   });
 }
 
-function renderFilterTable() {
+// Remove renderFilterTable function entirely
+// Update updateAllTables to only call renderBunkAndAttendTables
+function updateAllTables() {
+  renderBunkAndAttendTables();
+}
+
+function renderBunkAndAttendTables() {
   const filter = document.getElementById('attendanceFilter');
-  const tbody = document.getElementById('filterAttendanceBody');
-  tbody.innerHTML = '';
-  let subjectName, attPerc, bunk90, bunk85, bunk80, bunk75, bunk70, bunk65;
-  let att90, att85, att80, att75, att70, att65;
+  let row;
   if (filter.value === 'overall') {
-    const totalHeld = subjectData.reduce((sum, row) => sum + row.held, 0);
-    const totalAttended = subjectData.reduce((sum, row) => sum + row.attended, 0);
-    attPerc = totalHeld === 0 ? 0 : ((totalAttended / totalHeld) * 100).toFixed(2);
-    subjectName = 'Overall';
-    bunk90 = calculateBunkableClassesFor(totalAttended, totalHeld, 90);
-    bunk85 = calculateBunkableClassesFor(totalAttended, totalHeld, 85);
-    bunk80 = calculateBunkableClassesFor(totalAttended, totalHeld, 80);
-    bunk75 = calculateBunkableClassesFor(totalAttended, totalHeld, 75);
-    bunk70 = calculateBunkableClassesFor(totalAttended, totalHeld, 70);
-    bunk65 = calculateBunkableClassesFor(totalAttended, totalHeld, 65);
-    att90 = calculateClassesToAttend(totalAttended, totalHeld, 90);
-    att85 = calculateClassesToAttend(totalAttended, totalHeld, 85);
-    att80 = calculateClassesToAttend(totalAttended, totalHeld, 80);
-    att75 = calculateClassesToAttend(totalAttended, totalHeld, 75);
-    att70 = calculateClassesToAttend(totalAttended, totalHeld, 70);
-    att65 = calculateClassesToAttend(totalAttended, totalHeld, 65);
+    const totalHeld = subjectData.reduce((sum, r) => sum + r.held, 0);
+    const totalAttended = subjectData.reduce((sum, r) => sum + r.attended, 0);
+    row = { attended: totalAttended, held: totalHeld };
   } else {
-    const idx = parseInt(filter.value);
-    const row = subjectData[idx];
-    attPerc = row.held === 0 ? 0 : ((row.attended / row.held) * 100).toFixed(2);
-    subjectName = row.subject;
-    bunk90 = calculateBunkableClassesFor(row.attended, row.held, 90);
-    bunk85 = calculateBunkableClassesFor(row.attended, row.held, 85);
-    bunk80 = calculateBunkableClassesFor(row.attended, row.held, 80);
-    bunk75 = calculateBunkableClassesFor(row.attended, row.held, 75);
-    bunk70 = calculateBunkableClassesFor(row.attended, row.held, 70);
-    bunk65 = calculateBunkableClassesFor(row.attended, row.held, 65);
-    att90 = calculateClassesToAttend(row.attended, row.held, 90);
-    att85 = calculateClassesToAttend(row.attended, row.held, 85);
-    att80 = calculateClassesToAttend(row.attended, row.held, 80);
-    att75 = calculateClassesToAttend(row.attended, row.held, 75);
-    att70 = calculateClassesToAttend(row.attended, row.held, 70);
-    att65 = calculateClassesToAttend(row.attended, row.held, 65);
+    row = subjectData[parseInt(filter.value)];
   }
-  const tr = document.createElement('tr');
-  tr.innerHTML = `
-    <td>${subjectName}</td>
-    <td>
-      <div><strong>Attendance %:</strong> ${attPerc}%</div>
-      <div style="margin-top:0.3em;"><strong>To stay above 90%:</strong> <span style="color:#00e676; font-weight:bold;">${bunk90}</span> more class(es) to bunk</div>
-      <div><strong>To stay above 85%:</strong> <span style="color:#00e676; font-weight:bold;">${bunk85}</span> more class(es) to bunk</div>
-      <div><strong>To stay above 80%:</strong> <span style="color:#4f8cff; font-weight:bold;">${bunk80}</span> more class(es) to bunk</div>
-      <div><strong>To stay above 75%:</strong> <span style="color:#ffb300; font-weight:bold;">${bunk75}</span> more class(es) to bunk</div>
-      <div><strong>To stay above 70%:</strong> <span style="color:#ff9800; font-weight:bold;">${bunk70}</span> more class(es) to bunk</div>
-      <div><strong>To stay above 65%:</strong> <span style="color:#ff5252; font-weight:bold;">${bunk65}</span> more class(es) to bunk</div>
-      <hr style="border: none; border-top: 1px solid #333; margin: 0.7em 0;">
-      <div><strong>To reach 90%:</strong> <span style="color:#00e676; font-weight:bold;">${att90}</span> more class(es) to attend</div>
-      <div><strong>To reach 85%:</strong> <span style="color:#00e676; font-weight:bold;">${att85}</span> more class(es) to attend</div>
-      <div><strong>To reach 80%:</strong> <span style="color:#4f8cff; font-weight:bold;">${att80}</span> more class(es) to attend</div>
-      <div><strong>To reach 75%:</strong> <span style="color:#ffb300; font-weight:bold;">${att75}</span> more class(es) to attend</div>
-      <div><strong>To reach 70%:</strong> <span style="color:#ff9800; font-weight:bold;">${att70}</span> more class(es) to attend</div>
-      <div><strong>To reach 65%:</strong> <span style="color:#ff5252; font-weight:bold;">${att65}</span> more class(es) to attend</div>
-    </td>
-  `;
-  tbody.appendChild(tr);
+  const thresholds = [90, 85, 80, 75, 70, 65];
+  const bunkBody = document.getElementById('bunkableTableBody');
+  const attendBody = document.getElementById('attendTableBody');
+  bunkBody.innerHTML = '';
+  attendBody.innerHTML = '';
+  thresholds.forEach(percent => {
+    const leave = calculateBunkableClassesFor(row.attended, row.held, percent);
+    const att = calculateClassesToAttend(row.attended, row.held, percent);
+    const leaveRow = document.createElement('tr');
+    leaveRow.innerHTML = `<td>${percent}%</td><td>${leave}</td>`;
+    bunkBody.appendChild(leaveRow);
+    const attRow = document.createElement('tr');
+    attRow.innerHTML = `<td>${percent}%</td><td>${att}</td>`;
+    attendBody.appendChild(attRow);
+  });
 }
 
 // Initial renders
 renderSubjectTable();
 renderFilterDropdown();
-renderFilterTable();
-document.getElementById('attendanceFilter').addEventListener('change', renderFilterTable); 
+// updateAllTables(); // This line is moved to DOMContentLoaded
+document.getElementById('attendanceFilter').addEventListener('change', updateAllTables);
+
+window.addEventListener('DOMContentLoaded', function() {
+  if (localStorage.getItem('loginSuccess') === 'true') {
+    const dashboardContainer = document.querySelector('.dashboard-container');
+    const successMsg = document.createElement('div');
+    successMsg.className = 'login-success-msg';
+    successMsg.innerHTML = '<span>Logged in successfully!</span>';
+    dashboardContainer.insertBefore(successMsg, dashboardContainer.firstChild);
+    setTimeout(() => {
+      successMsg.style.display = 'none';
+      localStorage.removeItem('loginSuccess');
+    }, 4000);
+  }
+  // Info button toggle logic
+  const infoBtn = document.getElementById('infoBtn');
+  const marksPopup = document.getElementById('marksCriteriaPopup');
+  if (infoBtn && marksPopup) {
+    infoBtn.addEventListener('click', function() {
+      if (marksPopup.style.display === 'none' || marksPopup.style.display === '') {
+        marksPopup.style.display = 'block';
+      } else {
+        marksPopup.style.display = 'none';
+      }
+    });
+  }
+  // Initial renders for new tables
+  updateAllTables();
+  
+  // Load notification preferences
+  loadNotificationPreferences();
+  
+  // Add notification event listeners
+  setupNotificationHandlers();
+  
+  // Check attendance and send notifications if needed
+  checkAttendanceForNotifications();
+});
+
+// Notification Functions
+function loadNotificationPreferences() {
+  const savedPreferences = localStorage.getItem('notificationPreferences');
+  if (savedPreferences) {
+    const preferences = JSON.parse(savedPreferences);
+    document.getElementById('notificationEmail').value = preferences.email || '';
+    document.getElementById('emailNotifications').checked = preferences.emailNotifications !== false;
+  }
+}
+
+function setupNotificationHandlers() {
+  const saveBtn = document.getElementById('saveNotificationSettings');
+  const testBtn = document.getElementById('testNotification');
+  
+  if (saveBtn) {
+    saveBtn.addEventListener('click', saveNotificationSettings);
+  }
+  
+  if (testBtn) {
+    testBtn.addEventListener('click', testNotification);
+  }
+}
+
+function saveNotificationSettings() {
+  const email = document.getElementById('notificationEmail').value;
+  const emailNotifications = document.getElementById('emailNotifications').checked;
+  
+  const preferences = {
+    rollNumber: rollNumber,
+    email: email,
+    emailNotifications: emailNotifications
+  };
+  
+  // Save to localStorage
+  localStorage.setItem('notificationPreferences', JSON.stringify(preferences));
+  
+  // Send to backend
+  fetch('http://localhost:8083/api/notifications/preferences', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(preferences)
+  })
+  .then(response => response.json())
+  .then(data => {
+    showNotificationStatus('Settings saved successfully!', 'success');
+  })
+  .catch(error => {
+    console.error('Error saving preferences:', error);
+    showNotificationStatus('Failed to save settings. Please try again.', 'error');
+  });
+}
+
+function testNotification() {
+  const email = document.getElementById('notificationEmail').value;
+  
+  if (!email) {
+    showNotificationStatus('Please enter an email address first.', 'error');
+    return;
+  }
+  
+  const testData = {
+    rollNumber: rollNumber,
+    email: email,
+    testType: 'WARNING'
+  };
+  
+  fetch('http://localhost:8083/api/notifications/test-notification', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(testData)
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      showNotificationStatus('Test notification sent! Check your email.', 'success');
+    } else {
+      showNotificationStatus('Failed to send test notification: ' + data.message, 'error');
+    }
+  })
+  .catch(error => {
+    console.error('Error sending test notification:', error);
+    showNotificationStatus('Failed to send test notification. Please try again.', 'error');
+  });
+}
+
+function checkAttendanceForNotifications() {
+  const attendanceData = localStorage.getItem('attendanceData');
+  if (!attendanceData) return;
+  
+  const preferences = JSON.parse(localStorage.getItem('notificationPreferences') || '{}');
+  if (!preferences.email) return;
+  
+  fetch('http://localhost:8083/api/notifications/check-attendance', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      rollNumber: rollNumber,
+      attendanceData: attendanceData
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success && data.notificationsSent) {
+      showNotificationStatus('Attendance alert sent! Check your email.', 'info');
+    }
+  })
+  .catch(error => {
+    console.error('Error checking attendance for notifications:', error);
+  });
+}
+
+function showNotificationStatus(message, type) {
+  const statusDiv = document.getElementById('notificationStatus');
+  statusDiv.textContent = message;
+  statusDiv.className = `notification-status ${type}`;
+  
+  setTimeout(() => {
+    statusDiv.textContent = '';
+    statusDiv.className = 'notification-status';
+  }, 5000);
+} 

@@ -13,6 +13,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import com.tech.ProjectBunk.Model.SubjectAttendance;
 import com.tech.ProjectBunk.Service.AttendanceService;
+import com.tech.ProjectBunk.Service.NotificationService;
 
 import jakarta.servlet.http.HttpSession;
 @CrossOrigin(origins = "*")
@@ -21,6 +22,9 @@ public class LoginController {
 
     @Autowired
     private AttendanceService attendanceService;
+    
+    @Autowired
+    private NotificationService notificationService;
      @PostMapping("/login")
 public RedirectView loginUser(@RequestParam String username, HttpSession session) {
     session.setAttribute("username", username); // Store in session
@@ -52,11 +56,59 @@ public RedirectView loginUser(@RequestParam String username, HttpSession session
             }
 
             String jsonOutput = jsonBuilder.toString();
-            return attendanceService.parseAndCalculate(jsonOutput);
+            List<SubjectAttendance> attendanceList = attendanceService.parseAndCalculate(jsonOutput);
+            
+            // Check for notifications after processing attendance data
+            checkAndSendNotifications(rollNo, attendanceList);
+            
+            return attendanceList;
 
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Login error: " + e.getMessage());
         }
+    }
+    
+    private void checkAndSendNotifications(String rollNumber, List<SubjectAttendance> attendanceList) {
+        try {
+            // Calculate overall attendance
+            double overallAttendance = calculateOverallAttendance(attendanceList);
+            
+            // For now, we'll use a default email for testing
+            // In production, you would retrieve user preferences from database
+            String defaultEmail = "test@example.com"; // Replace with actual user email
+            String defaultPhone = null; // Replace with actual user phone
+            
+            // Check if attendance is below thresholds and send notifications
+            notificationService.checkAndSendNotifications(
+                defaultEmail, 
+                rollNumber, 
+                overallAttendance
+            );
+            
+            System.out.println("Attendance notification check completed for roll number: " + rollNumber);
+        } catch (Exception e) {
+            System.err.println("Error checking notifications: " + e.getMessage());
+        }
+    }
+    
+    private double calculateOverallAttendance(List<SubjectAttendance> attendanceList) {
+        if (attendanceList == null || attendanceList.isEmpty()) {
+            return 0.0;
+        }
+        
+        int totalHeld = 0;
+        int totalAttended = 0;
+        
+        for (SubjectAttendance attendance : attendanceList) {
+            totalHeld += attendance.getHeld();
+            totalAttended += attendance.getAttended();
+        }
+        
+        if (totalHeld == 0) {
+            return 0.0;
+        }
+        
+        return (totalAttended * 100.0) / totalHeld;
     }
 }

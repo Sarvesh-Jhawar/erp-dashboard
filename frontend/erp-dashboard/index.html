@@ -5,22 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Bunk Calculator Login</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="login-container">
-    <h1 class="main-heading">Bunk Calculator</h1>
-    <div class="typing-text" id="typingText"></div>
-    <h2>Login</h2>
+<div class="login-bg">
+  <div class="login-box">
+    <p id="typingText"></p>
+    <p>Attendance Analyzer</p>
     <form id="loginForm">
-      <label for="username">Roll Number:</label>
-      <input type="text" id="username" name="rollno" required />
-
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required />
-
-      <button type="submit">Login</button>
+      <div class="user-box">
+        <input required name="username" id="username" type="text">
+        <label>Username</label>
+      </div>
+      <div class="user-box">
+        <input required name="password" id="password" type="password">
+        <label>Password</label>
+      </div>
+      <button type="submit" class="login-submit-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        Login
+      </button>
     </form>
+    <p>* Use your ERP username and password to login</p>
   </div>
+</div>
   <script src="login.js"></script>
   <script src="typing.js"></script>
 </body>

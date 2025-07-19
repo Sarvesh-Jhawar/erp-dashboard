@@ -8,9 +8,13 @@
 </head>
 <body>
   <div class="dashboard-container">
-    <h1>Bunk Calculator Dashboard</h1>
-    <div class="welcome-msg" id="welcomeMsg"></div>
-    <div class="info-box marks-criteria-box">
+    <div class="dashboard-header">
+      <h1>Attendance Analyzer Dashboard</h1>
+      <button id="infoBtn" class="info-btn" title="Show marks criteria">
+        &#9432;
+      </button>
+    </div>
+    <div id="marksCriteriaPopup" class="marks-criteria-popup" style="display:none;">
       <strong>Marks Criteria:</strong><br>
       ≥85% = 5 marks<br>
       80-84% = 4 marks<br>
@@ -19,6 +23,7 @@
       65-69% = 1 mark<br>
       &lt;65% = 0 marks
     </div>
+    <div class="welcome-msg" id="welcomeMsg"></div>
     <div class="attendance-section">
       <h2>Subject Wise Attendance</h2>
       <table class="attendance-table" id="subjectAttendanceTable">
@@ -39,7 +44,7 @@
       </table>
     </div>
     <div class="attendance-section">
-      <h2>Attendance & Bunkable Classes Filter</h2>
+      <h2>Attendance & Leave Filter</h2>
       <table class="attendance-table" id="filterAttendanceTable">
         <thead>
           <tr>
@@ -52,12 +57,55 @@
             </th>
           </tr>
         </thead>
-        <tbody id="filterAttendanceBody">
-          <!-- Filtered data will be rendered by JS -->
-        </tbody>
+        <!-- Remove the old <tbody id="filterAttendanceBody"> section -->
       </table>
+      <div class="bunk-attend-tables">
+        <h3 class="bunk-table-title">How many more classes can I leave?</h3>
+        <table class="attendance-table" id="bunkableTable">
+          <thead>
+            <tr>
+              <th>Attendance Target (%)</th>
+              <th>Leave Allowed</th>
+            </tr>
+          </thead>
+          <tbody id="bunkableTableBody"></tbody>
+        </table>
+        <h3 class="attend-table-title">How many more classes must I attend?</h3>
+        <table class="attendance-table" id="attendTable">
+          <thead>
+            <tr>
+              <th>Attendance Target (%)</th>
+              <th>Classes to Attend</th>
+            </tr>
+          </thead>
+          <tbody id="attendTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Notification Settings Section -->
+    <div class="attendance-section">
+      <h2>📧 Notification Settings</h2>
+      <div class="notification-settings">
+        <div class="setting-group">
+          <label for="notificationEmail">Email Address:</label>
+          <input type="email" id="notificationEmail" placeholder="Enter your email for alerts">
+        </div>
+        <div class="setting-group">
+          <label>
+            <input type="checkbox" id="emailNotifications" checked>
+            Receive email notifications
+          </label>
+        </div>
+        <div class="setting-group">
+          <button id="saveNotificationSettings" class="save-btn">Save Settings</button>
+          <button id="testNotification" class="test-btn">Test Notification</button>
+        </div>
+        <div id="notificationStatus" class="notification-status"></div>
+      </div>
     </div>
     <a href="index.html" class="back-link">&larr; Back to Login</a>
+    <p class="disclaimer">* This data is calculated based on your ERP data. For official records, always refer to your ERP portal.</p>
   </div>
   <script src="dashboard.js"></script>
 </body>
