@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bunk Calculator Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(24,24,24,0.98);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+    <div style="border:8px solid #232a34;border-top:8px solid #4f8cff;border-radius:50%;width:70px;height:70px;animation:spin 1s linear infinite;"></div>
+    <div style="margin-top:24px;font-size:1.3rem;color:#4f8cff;font-family:'Orbitron',sans-serif;letter-spacing:1px;">Loading Dashboard...</div>
+  </div>
+  <style>
+    @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
+  </style>
+  <!-- Profile and Logout at top right -->
+  <div class="top-right-profile">
+    <div class="profile-icon" title="User Profile" id="profileIcon">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/user-male-circle.png" alt="Profile">
+    </div>
+    <div class="profile-dropdown" id="profileDropdown" style="display:none;">
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+  <div class="dashboard-container">
+    <div class="dashboard-header">
+      <h1>Dashboard</h1>
+      <button id="infoBtn" class="info-btn" title="Show marks criteria">
+        &#9432;
+      </button>
+    </div>
+    <div class="analytics-link-row" style="text-align:center;margin-bottom:1.5rem;">
+      <a href="analytics.html" class="analytics-btn">View Analytics</a>
+    </div>
+    <div id="marksCriteriaPopup" class="marks-criteria-popup" style="display:none;">
+      <strong>Marks Criteria:</strong><br>
+      ≥85% = 5 marks<br>
+      80-84% = 4 marks<br>
+      75-79% = 3 marks<br>
+      70-74% = 2 marks<br>
+      65-69% = 1 mark<br>
+      &lt;65% = 0 marks
+    </div>
+    <div class="welcome-msg" id="welcomeMsg"></div>
+    <div class="attendance-section">
+      <h2>Subject Wise Attendance</h2>
+      <table class="attendance-table" id="subjectAttendanceTable">
+        <thead>
+          <tr>
+            <th>S/N</th>
+            <th>Subject</th>
+            <th>Faculty</th>
+            <th>Classes Held</th>
+            <th>Classes Attended</th>
+            <th>Att %</th>
+            <th>Marks</th>
+          </tr>
+        </thead>
+        <tbody id="subjectAttendanceBody">
+          <!-- Rows will be rendered by JS -->
+        </tbody>
+      </table>
+    </div>
+    <div class="attendance-section">
+      <h2>Attendance & Leave Filter</h2>
+      <table class="attendance-table" id="filterAttendanceTable">
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>
+              <select id="attendanceFilter">
+                <option value="overall">Overall</option>
+                <!-- Subject options will be added by JS -->
+              </select>
+            </th>
+          </tr>
+        </thead>
+        <!-- Remove the old <tbody id="filterAttendanceBody"> section -->
+      </table>
+      <div class="bunk-attend-tables">
+        <h3 class="bunk-table-title">How many more classes can I leave?</h3>
+        <table class="attendance-table" id="bunkableTable">
+          <thead>
+            <tr>
+              <th>Attendance Target (%)</th>
+              <th>Leave Allowed</th>
+            </tr>
+          </thead>
+          <tbody id="bunkableTableBody"></tbody>
+        </table>
+        <h3 class="attend-table-title">How many more classes must I attend?</h3>
+        <table class="attendance-table" id="attendTable">
+          <thead>
+            <tr>
+              <th>Attendance Target (%)</th>
+              <th>Classes to Attend</th>
+            </tr>
+          </thead>
+          <tbody id="attendTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <p class="disclaimer">* This data is calculated based on your ERP data. For official records, always refer to your ERP portal.</p>
+  </div>
+  <script src="dashboard.js"></script>
+  <script>
+    // Hide loading overlay after 1.2 seconds
+    window.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+      }, 1200);
+    });
+    // Profile dropdown toggle
+    const profileIcon = document.getElementById('profileIcon');
+    const profileDropdown = document.getElementById('profileDropdown');
+    document.addEventListener('click', function(e) {
+      if (profileIcon.contains(e.target)) {
+        profileDropdown.style.display = (profileDropdown.style.display === 'block') ? 'none' : 'block';
+      } else {
+        profileDropdown.style.display = 'none';
+      }
+    });
+    // Logout button functionality
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html> 
