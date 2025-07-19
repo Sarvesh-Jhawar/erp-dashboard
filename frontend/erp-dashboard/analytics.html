@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analytics - Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .analytics-container {
+      max-width: 900px;
+      margin: 3rem auto;
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.25);
+      padding: 2.5rem 2rem 2rem 2rem;
+      color: #fff;
+    }
+    .back-btn {
+      display: inline-block;
+      background: #4f8cff;
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 8px 24px;
+      border-radius: 20px;
+      text-decoration: none;
+      margin-bottom: 1.5rem;
+      transition: background 0.2s, color 0.2s;
+    }
+    .back-btn:hover {
+      background: #00e676;
+      color: #232a34;
+    }
+    @media (max-width: 700px) {
+      .analytics-container {
+        max-width: 100vw;
+        padding: 1.2rem 0.2rem 1.2rem 0.2rem;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="analytics-container">
+    <a href="dashboard.html" class="back-btn">&larr; Back to Dashboard</a>
+    <h2 style="text-align:center;margin-bottom:2rem;">Attendance Analytics</h2>
+    <canvas id="attendanceChart" height="120"></canvas>
+  </div>
+  <script>
+    // Example: Get attendance data from localStorage (as in your dashboard)
+    let attendanceData = JSON.parse(localStorage.getItem('attendanceData') || '[]');
+    // Fallback sample data if none exists
+    if (!attendanceData || attendanceData.length === 0) {
+      attendanceData = [
+        { subject: 'SE', percentage: 80 },
+        { subject: 'EAD', percentage: 95 },
+        { subject: 'ML', percentage: 100 },
+        { subject: 'CN', percentage: 90 },
+        { subject: 'FLAT', percentage: 85 }
+      ];
+    }
+    // Filter out 'Overall' subject if present
+    attendanceData = attendanceData.filter(row => (row.subject || '').toLowerCase() !== 'overall');
+    // Prepare data for Chart.js
+    const labels = attendanceData.map(row => row.subject || 'Subject');
+    const data = attendanceData.map(row => row.percentage || 0);
+    const colors = [
+      '#4f8cff', '#00e676', '#ffeb3b', '#ff5252', '#ffb300', '#7c4dff', '#00bcd4', '#ff4081', '#8bc34a', '#ff7043'
+    ];
+    const backgroundColors = labels.map((_, i) => colors[i % colors.length]);
+    const ctx = document.getElementById('attendanceChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Attendance %',
+          data: data,
+          backgroundColor: backgroundColors,
+          borderRadius: 8,
+          barThickness: 24,
+          maxBarThickness: 28
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            ticks: {
+              color: '#fff',
+              font: { family: 'Orbitron', weight: 'bold' }
+            },
+            grid: { color: 'rgba(255,255,255,0.08)' }
+          },
+          x: {
+            ticks: {
+              color: '#fff',
+              font: { family: 'Orbitron', weight: 'bold' }
+            },
+            grid: { color: 'rgba(255,255,255,0.08)' }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html> 

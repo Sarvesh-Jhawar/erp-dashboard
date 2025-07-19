@@ -7,12 +7,32 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(24,24,24,0.98);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+    <div style="border:8px solid #232a34;border-top:8px solid #4f8cff;border-radius:50%;width:70px;height:70px;animation:spin 1s linear infinite;"></div>
+    <div style="margin-top:24px;font-size:1.3rem;color:#4f8cff;font-family:'Orbitron',sans-serif;letter-spacing:1px;">Loading Dashboard...</div>
+  </div>
+  <style>
+    @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
+  </style>
+  <!-- Profile and Logout at top right -->
+  <div class="top-right-profile">
+    <div class="profile-icon" title="User Profile" id="profileIcon">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/user-male-circle.png" alt="Profile">
+    </div>
+    <div class="profile-dropdown" id="profileDropdown" style="display:none;">
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </div>
   <div class="dashboard-container">
     <div class="dashboard-header">
-      <h1>Attendance Analyzer Dashboard</h1>
+      <h1>Dashboard</h1>
       <button id="infoBtn" class="info-btn" title="Show marks criteria">
         &#9432;
       </button>
+    </div>
+    <div class="analytics-link-row" style="text-align:center;margin-bottom:1.5rem;">
+      <a href="analytics.html" class="analytics-btn">View Analytics</a>
     </div>
     <div id="marksCriteriaPopup" class="marks-criteria-popup" style="display:none;">
       <strong>Marks Criteria:</strong><br>
@@ -82,31 +102,31 @@
         </table>
       </div>
     </div>
-
-    <!-- Notification Settings Section -->
-    <div class="attendance-section">
-      <h2>📧 Notification Settings</h2>
-      <div class="notification-settings">
-        <div class="setting-group">
-          <label for="notificationEmail">Email Address:</label>
-          <input type="email" id="notificationEmail" placeholder="Enter your email for alerts">
-        </div>
-        <div class="setting-group">
-          <label>
-            <input type="checkbox" id="emailNotifications" checked>
-            Receive email notifications
-          </label>
-        </div>
-        <div class="setting-group">
-          <button id="saveNotificationSettings" class="save-btn">Save Settings</button>
-          <button id="testNotification" class="test-btn">Test Notification</button>
-        </div>
-        <div id="notificationStatus" class="notification-status"></div>
-      </div>
-    </div>
-    <a href="index.html" class="back-link">&larr; Back to Login</a>
     <p class="disclaimer">* This data is calculated based on your ERP data. For official records, always refer to your ERP portal.</p>
   </div>
   <script src="dashboard.js"></script>
+  <script>
+    // Hide loading overlay after 1.2 seconds
+    window.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+      }, 1200);
+    });
+    // Profile dropdown toggle
+    const profileIcon = document.getElementById('profileIcon');
+    const profileDropdown = document.getElementById('profileDropdown');
+    document.addEventListener('click', function(e) {
+      if (profileIcon.contains(e.target)) {
+        profileDropdown.style.display = (profileDropdown.style.display === 'block') ? 'none' : 'block';
+      } else {
+        profileDropdown.style.display = 'none';
+      }
+    });
+    // Logout button functionality
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    });
+  </script>
 </body>
 </html> 

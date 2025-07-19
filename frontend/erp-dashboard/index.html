@@ -8,30 +8,51 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="login-bg">
-  <div class="login-box">
-    <p id="typingText"></p>
-    <p>Attendance Analyzer</p>
-    <form id="loginForm">
-      <div class="user-box">
-        <input required name="username" id="username" type="text">
-        <label>Username</label>
-      </div>
-      <div class="user-box">
-        <input required name="password" id="password" type="password">
-        <label>Password</label>
-      </div>
-      <button type="submit" class="login-submit-btn">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        Login
-      </button>
-    </form>
-    <p>* Use your ERP username and password to login</p>
+  <!-- Loading Overlay (hidden by default) -->
+  <div id="loadingOverlay" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(24,24,24,0.98);z-index:9999;flex-direction:column;align-items:center;justify-content:center;">
+    <div style="border:8px solid #232a34;border-top:8px solid #4f8cff;border-radius:50%;width:70px;height:70px;animation:spin 1s linear infinite;"></div>
+    <div style="margin-top:24px;font-size:1.3rem;color:#4f8cff;font-family:'Orbitron',sans-serif;letter-spacing:1px;">Loading Dashboard...</div>
   </div>
-</div>
+  <style>
+    @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
+  </style>
+  <div class="background-decor">
+    <div class="bg-shape1"></div>
+    <div class="bg-shape2"></div>
+    <div class="bg-shape3"></div>
+    <!-- College themed SVGs and icons -->
+    <img src="https://img.icons8.com/ios-filled/100/ffffff/graduation-cap.png" alt="Graduation Cap" style="position:absolute;top:30px;left:40px;opacity:0.10;z-index:1;width:80px;">
+    <img src="https://img.icons8.com/ios-filled/100/ffffff/university.png" alt="University" style="position:absolute;bottom:40px;right:60px;opacity:0.10;z-index:1;width:90px;">
+    <img src="https://img.icons8.com/ios-filled/100/ffffff/open-book--v2.png" alt="Book" style="position:absolute;top:60%;left:10%;opacity:0.10;z-index:1;width:70px;">
+    <img src="https://img.icons8.com/ios-filled/100/ffffff/graduation-cap.png" alt="Graduation Cap" style="position:absolute;top:80%;left:85%;opacity:0.08;z-index:1;width:60px;">
+    <img src="https://img.icons8.com/ios-filled/100/ffffff/university.png" alt="University" style="position:absolute;top:10%;right:10%;opacity:0.08;z-index:1;width:60px;">
+    <img src="https://img.icons8.com/ios-filled/100/ffffff/graduation-cap.png" alt="Graduation Cap" style="position:absolute;bottom:10%;left:5%;opacity:0.07;z-index:1;width:50px;">
+    <img src="https://img.icons8.com/ios-filled/100/ffffff/open-book--v2.png" alt="Book" style="position:absolute;bottom:20%;right:15%;opacity:0.07;z-index:1;width:50px;">
+  </div>
+  <div class="login-bg" id="login-bg">
+    <div class="login-box">
+      <p>Attendance Analyzer</p>
+      <form id="loginForm">
+        <div class="user-box">
+          <input required name="username" id="username" type="text">
+          <label>Username</label>
+        </div>
+        <div class="user-box">
+          <input required name="password" id="password" type="password">
+          <label>Password</label>
+        </div>
+        <button type="submit" class="login-submit-btn">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          Login
+        </button>
+      </form>
+      <p class="erp-note">* Use your ERP username and password to login</p>
+      <p class="cbit-note">* Only for CBIT students</p>
+    </div>
+  </div>
   <script src="login.js"></script>
   <script src="typing.js"></script>
 </body>

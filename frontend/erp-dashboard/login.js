@@ -23,8 +23,11 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     localStorage.setItem('attendanceData', JSON.stringify(data));
     localStorage.setItem('bunk_username', username);
     localStorage.setItem('loginSuccess', 'true');
-    // Show success message with animation (removed, now handled in dashboard)
-    window.location.href = 'dashboard.html';
+    // Show loading overlay before redirect
+    document.getElementById('loadingOverlay').style.display = 'flex';
+    setTimeout(function() {
+      window.location.href = 'dashboard.html';
+    }, 600); // Short delay for smooth transition
   })
   .catch(error => {
     console.error('Login failed:', error);
